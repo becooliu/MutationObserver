@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test 浏览器Mutation Observe API</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="../../jquery/jquery-1.11.3.min.js"></script>
+    <script>
+        let app = document.getElementById('app')
+        createElement(app)
+
+        
+        const config = {attributes: true, subtree: true, childList: true}
+
+        const callback = function(mutationList, observer) {
+            try {
+                for(let mutation of mutationList) {
+                    if(mutation.type === 'childList') {
+                        for(let i in mutation) {
+                            
+                            console.log(i, mutation[i])
+                        }
+                        
+                    }else if(mutation.type === 'attributes') {
+                        console.log(`Attributes changed: ${mutation.attributeName}`)
+                    }
+                }
+            }catch(error) {
+                console.log(`Error: ${error.message}`)
+            }
+        }
+
+        const observer = new MutationObserver(callback)
+
+        observer.disconnect()
+
+        observer.observe(app, config)
+
+
+        function createElement(el){
+            let childNode = document.createElement('DIV')
+            childNode.className = 'child'
+            childNode.innerText = 'Here is the child node .'
+
+
+            setTimeout(function(){
+                el.appendChild(childNode)
+            }, 1000)
+        }
+    </script>
+</body>
+</html>
